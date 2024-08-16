@@ -35,82 +35,32 @@ function validateInput(testInput) {
   }
 }
 
-function formSubmission(
-  document,
-  list,
-  pilot,
-  copilot,
-  fuelLevel,
-  cargoLevel
-) {
-  list = document.getElementById("launchStatusCheck");
+function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
+  let faultyItems = list;
+  let pilotName = pilot.value;
 
-  if (validateInput(pilot) === "Not a Number"){
+  console.log("Pilot's name:", pilotName);
+  
+  let copilotName = copilot.value;
+  let fuel = fuelLevel.value;
+  let cargo = cargoLevel.value;
+  
+  let pilotStatus = document.getElementById("pilotStatus");
+
+  let readyForLaunch = true;
+
+  //convert strings to numbers
+  if (validateInput(pilotName) === "Not a Number") {
     console.log("pilot is not a number");
-    let pilotStatus = document.getElementById("pilotStatus");
-    let pilotName = document.getElementById("pilotName");
-      if (pilotStatus && pilotName) {
-        pilotStatus.innerHTML = `${pilotName.value} Ready`;
-      } else {
-        window.alert("pilotStatus or pilotName not found.");
-      }   
-  } else {
-    console.log("need a valid input")
-  }
-
-  if (validateInput(copilot) === "Not a Number"){
-    console.log("copilot is not a number");
-    let copilotStatus = document.getElementById("copilotStatus");
-    let copilotName = document.getElementById("copilotName");
-      if (copilotStatus && copilotName) {
-        copilotStatus.innerHTML = `${copilotName.value} Ready`;
-      } else {
-        window.alert("copilotStatus or copilotName not found");
-      }  
-  } else {
-    window.alert("Enter a valid input")
-  }
-
-  if (validateInput(fuelLevel) === "Is a Number"){
-    console.log("is a number");
-
-    if (fuelLevel < 10000) {
-      let faultyItems = document.getElementById("faultyItems");
-      let fuelStatus = document.getElementById("fuelStatus");
-      let launchStatus = document.getElementById("launchStatus");
-
-      faultyItems.style.visibility = "visible";
-      fuelStatus.innerHTML = "There is not enough fuel for the journey";
-      launchStatus.innerHTML = "Shuttle not ready for launch";
-      launchStatus.style.backgroundColor = "red";
+      pilotStatus.innerHTML = `${pilotName} Ready`;
+      console.log(pilotStatus);
     } else {
-      window.alert("Shuttle is ready to launch")
-    }
-  } else {
-    window.alert("Enter a valid input")
+    pilotStatus.innerHTML = "Pilot name is invalid";
+    readyForLaunch = false;
   };
-
-
-  if (validateInput(cargoLevel) === "Is a Number"){
-    console.log("is a number")
-    
-    if (cargoLevel > 10000) {
-      let cargoStatus = document.getElementById("cargoStatus");
-
-      faultyItems.style.visibility = "visible";
-      cargoStatus.innerHTML = "There is too much mass for the shuttle to take off.";
-      launchStatus.innerHTML = "Shuttle not ready for launch";
-      launchStatus.style.backgroundColor = "red";
-    } else {
-      window.alert("Shuttle is ready to launch")
-    }
-  } else {
-    window.alert("Enter a valid input")
-  };
-    
 }
 
-async function myFetch() {`~`
+async function myFetch() {
   let planetsReturned;
 
   planetsReturned = await fetch().then(function (response) {});
