@@ -23,16 +23,6 @@ window.addEventListener("load", function () {
 
     // grab 4 inputs then pass into formSubmission
     let pilot = document.querySelector("input[name=pilotName]");
-
-    // console.log("Pilot input field:", pilot);
-
-    // if (pilot) {
-    //     let pilotName = pilot.value;
-    //     console.log("Pilot's name:", pilotName);
-    // } else {
-    //     console.log("Pilot input field not found");
-    // };
-
     let copilot = document.querySelector("input[name=copilotName]");
     let fuel = document.querySelector("input[name=fuelLevel]");
     let cargo = document.querySelector("input[name=cargoMass]");
