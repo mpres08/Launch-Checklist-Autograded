@@ -38,26 +38,61 @@ function validateInput(testInput) {
 function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
   let faultyItems = list;
   let pilotName = pilot.value;
-
-  console.log("Pilot's name:", pilotName);
-  
   let copilotName = copilot.value;
   let fuel = fuelLevel.value;
   let cargo = cargoLevel.value;
-  
+
   let pilotStatus = document.getElementById("pilotStatus");
+  let copilotStatus = document.getElementById("copilotStatus");
+  let fuelStatus = document.getElementById("fuelStatus");
+  let launchStatus = document.getElementById("launchStatus");
 
   let readyForLaunch = true;
 
-  //convert strings to numbers
   if (validateInput(pilotName) === "Not a Number") {
-    console.log("pilot is not a number");
-      pilotStatus.innerHTML = `${pilotName} Ready`;
-      console.log(pilotStatus);
-    } else {
-    pilotStatus.innerHTML = "Pilot name is invalid";
+    pilotStatus.innerHTML = `Pilot ${pilotName} is ready for launch`;
+  } else {
     readyForLaunch = false;
-  };
+    pilotStatus.innerHTML = "Pilot name is invalid";
+    window.alert("Enter a valid input for pilot");
+    
+  }
+
+  if (validateInput(copilotName) === "Not a Number") {
+    copilotStatus.innerHTML = `Co-pilot ${copilotName} is ready for launch`;
+  } else {
+    readyForLaunch = false;
+    copilotStatus.innerHTML = "Copilot name is invalid";
+    window.alert("Enter a valid input for copilot");
+  }
+
+  if (validateInput(fuel) === "Is a Number" && fuel > 10000) {
+    fuelStatus.innerHTML = "Fuel level high enough for launch";
+  } else if (fuel < 10000) {
+    readyForLaunch = false;
+    fuelStatus.innerHTML = "There is not enough fuel for the journey";
+  } else {
+    window.alert("Enter a valid input for fuel");
+  }
+
+  if (validateInput(cargo) === "Is a Number" && cargo < 10000) {
+    cargoStatus.innerHTML = "Cargo mass low enough for launch";
+  } else if (cargo > 10000) {
+    readyForLaunch = false;
+    cargoStatus.innerHTML = "There is too much mass for the shuttle to take off";
+  } else {
+    window.alert("Enter a valid input for cargo");
+  }
+
+  faultyItems.style.visibility = "visible";
+
+  if (readyForLaunch === false) {
+    launchStatus.innerHTML = "Shuttle Not Ready for launch";
+    launchStatus.style.backgroundColor = "red";
+  } else {
+    launchStatus.innerHTML = "Shuttle is Ready for Launch";
+    launchStatus.style.backgroundColor = "green";
+  }
 }
 
 async function myFetch() {
