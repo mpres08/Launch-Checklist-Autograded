@@ -1,6 +1,7 @@
 // Write your helper functions here!
 
-require("cross-fetch/polyfill");
+require('isomorphic-fetch');
+// require("cross-fetch/polyfill");
 
 function addDestinationInfo(document, name, diameter, star, distance, moons, imageUrl) {
   const missionTarget = document.getElementById("missionTarget");
@@ -14,7 +15,7 @@ function addDestinationInfo(document, name, diameter, star, distance, moons, ima
         <li>Distance from Earth: ${distance}</li>
         <li>Number of Moons: ${moons}</li>
       </ol>
-      <img src="${imageUrl}" alt="Image of ${name}">
+      <img src="${imageUrl}">
   `; 
 }
 
@@ -29,72 +30,74 @@ function validateInput(testInput) {
 }
 
 function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
-  let faultyItems = list;
-  let pilotName = pilot.value;
-  let copilotName = copilot.value;
-  let fuel = fuelLevel.value;
-  let cargo = cargoLevel.value;
 
   let pilotStatus = document.getElementById("pilotStatus");
   let copilotStatus = document.getElementById("copilotStatus");
   let fuelStatus = document.getElementById("fuelStatus");
+  let cargoStatus = document.getElementById("cargoStatus");
   let launchStatus = document.getElementById("launchStatus");
 
   let readyForLaunch = true;
 
-  if (validateInput(pilotName) === "Not a Number") {
-    pilotStatus.innerHTML = `Pilot ${pilotName} is ready for launch`;
-  } else {
+  if (validateInput(pilot) === "Empty" || validateInput(pilot) === "Is a Number") {
     readyForLaunch = false;
     pilotStatus.innerHTML = "Pilot name is invalid";
-    window.alert("Enter a valid input for pilot");
-    
+    alert("Enter a valid input for pilot");
+  } else {
+    pilotStatus.innerHTML = `Pilot ${pilot} is ready for launch`;
   }
 
-  if (validateInput(copilotName) === "Not a Number") {
-    copilotStatus.innerHTML = `Co-pilot ${copilotName} is ready for launch`;
-  } else {
+  if (validateInput(copilot) === "Empty" || validateInput(copilot) === "Is a Number") {
     readyForLaunch = false;
     copilotStatus.innerHTML = "Copilot name is invalid";
-    window.alert("Enter a valid input for copilot");
+    alert("Enter a valid input for copilot");
+  } else {
+    copilotStatus.innerHTML = `Co-pilot ${copilot} is ready for launch`;
   }
 
-  if (validateInput(fuel) === "Is a Number" && fuel > 10000) {
+  const fuelValidation = validateInput(fuelLevel);
+  if (fuelValidation === "Is a Number" && fuelLevel >= 10000) {
     fuelStatus.innerHTML = "Fuel level high enough for launch";
-  } else if (fuel < 10000) {
+  } else if (fuelLevel <= 10000) {
     readyForLaunch = false;
-    fuelStatus.innerHTML = "There is not enough fuel for the journey";
+    fuelStatus.innerHTML = "Fuel level too low for launch";
   } else {
+    readyForLaunch = false;
     window.alert("Enter a valid input for fuel");
   }
 
-  if (validateInput(cargo) === "Is a Number" && cargo < 10000) {
+  const cargoValidation = validateInput(cargoLevel);
+  if (cargoValidation === "Is a Number" && cargoLevel <= 10000) {
     cargoStatus.innerHTML = "Cargo mass low enough for launch";
-  } else if (cargo > 10000) {
+  } else if (cargoLevel >= 10000) {
     readyForLaunch = false;
-    cargoStatus.innerHTML = "There is too much mass for the shuttle to take off";
+    cargoStatus.innerHTML = "Cargo mass too heavy for launch";
   } else {
     window.alert("Enter a valid input for cargo");
   }
 
-  faultyItems.style.visibility = "visible";
+  list.style.visibility = "visible";
 
   if (readyForLaunch === false) {
-    launchStatus.innerHTML = "Shuttle Not Ready for launch";
-    launchStatus.style.backgroundColor = "red";
+    launchStatus.innerHTML = "Shuttle Not Ready for Launch";
+    launchStatus.style.color = "red";
   } else {
     launchStatus.innerHTML = "Shuttle is Ready for Launch";
-    launchStatus.style.backgroundColor = "green";
+    launchStatus.style.color = "green";
   }
 }
 
 async function myFetch() {
   let planetsReturned;
 
-  planetsReturned = await fetch("https://handlers.education.launchcode.org/static/planets.json").then(function(response) {
-    return response.json();
-  });
-
+  planetsReturned = await fetch("https://handlers.education.launchcode.org/static/planets.json").then( function(response) {
+          if (response.status >= 400) {
+              throw new Error ("Bad response");
+          }
+          else {
+              return response.json();
+          }
+      });
   return planetsReturned;
 }
 
